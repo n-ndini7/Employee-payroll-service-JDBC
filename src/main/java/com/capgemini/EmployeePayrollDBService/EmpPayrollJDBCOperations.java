@@ -72,13 +72,7 @@ public class EmpPayrollJDBCOperations {
 			throw new EmployeePayrollJDBCException("Cannot retrieve data!! \nInvalidDatatypeException thrown...!!",
 					ExceptionType.INVALID_DATA);
 		}
-
-		if (empList == null) {
-			throw new EmployeePayrollJDBCException("Empty table!! \nEmptySetException thrown...",
-					ExceptionType.EMPTY_SET);
-		} else {
-			return empList;
-		}
+		return empList;
 
 	}
 

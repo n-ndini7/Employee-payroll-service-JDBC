@@ -29,7 +29,6 @@ public class EmployeePayrollServiceJDBCTest {
 		try {
 			List<EmployeePayrollDataJDBC> list1 = e1.showTable();
 			Assert.assertEquals(7, list1.size());
-			System.out.println(list1);
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}

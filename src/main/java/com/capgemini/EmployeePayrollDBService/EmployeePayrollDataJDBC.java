@@ -34,7 +34,7 @@ public class EmployeePayrollDataJDBC {
 
 	@Override
 	public String toString() {
-		return "ID = " + id + ", Name = " + name + ", Gender = " + gender + ", Basic Pay = " + basic_pay + ", Phone = "
+		return "\nID = " + id + ", Name = " + name + ", Gender = " + gender + ", Basic Pay = " + basic_pay + ", Phone = "
 				+ phone + ", Department=" + dept + ". Address=" + add + ", Deductions=" + dept + ", Taxable Pay ="
 				+ taxable_pay + ", Tax=" + tax + ", Net Pay = " + net_pay + ", Start Date =" + startDate;
 	}
