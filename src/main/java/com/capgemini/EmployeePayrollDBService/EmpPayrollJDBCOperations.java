@@ -15,8 +15,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC4 - update salary using prepared statement
-//Refactored UC4 
+//UC5 - retrieve employees for a given date range
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
@@ -172,6 +171,22 @@ public class EmpPayrollJDBCOperations {
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<EmployeePayrollData> QueryForGivenDateRange(Date startDate, Date endDate) {
+		String sql = String.format("select * from employee_payroll where start between '%s' and '%s';", startDate,
+				endDate);
+		List<EmployeePayrollData> empList = new ArrayList<>();
+		try (Connection connection = this.getConnection()) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			empList = this.getEmployeePayrollData(result);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e1) {
+			e1.printStackTrace();
+		}
+		return empList;
 	}
 
 	private static void listDrivers() {
