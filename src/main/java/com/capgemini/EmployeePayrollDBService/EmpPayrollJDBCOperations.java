@@ -3,6 +3,7 @@ package com.capgemini.EmployeePayrollDBService;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -12,9 +13,14 @@ import java.util.List;
 import java.sql.Statement;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC3 - Update salary using update statement
+//UC4 - update salary using prepared statement
 public class EmpPayrollJDBCOperations {
 
+	public enum UpdateType {
+		STATEMENT, PREPARED_STATEMENT;
+	}
+
+	UpdateType type;
 	private static ConnectionCredentials c1 = null;
 	public static String status = null;
 
@@ -73,19 +79,43 @@ public class EmpPayrollJDBCOperations {
 
 	}
 
-	public static boolean UpdateSalary() throws EmployeePayrollJDBCException {
+	public static boolean UpdateSalary(UpdateType type) throws EmployeePayrollJDBCException {
 		double salary = 3000000;
 		String name = "Terissa";
+		String dept = "Sales";
 		boolean update = true;
-		String sql2 = String.format("UPDATE employee_payroll SET basic_pay = %.2f WHERE name = '%s';", salary, name);
 		int res = 0;
 		try (Connection con2 = getConnection()) {
-			Statement statement = con2.createStatement();
-			res = statement.executeUpdate(sql2);
-			if (res == 0) {
-				update = false;
-				throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
-						ExceptionType.UPDATE_FAILED);
+			String type1 = type.toString();
+			switch (type1) {
+			case "STATMENT": {
+				String sql2 = String.format("UPDATE employee_payroll SET basic_pay = %.2f WHERE name = '%s';", salary,
+						name);
+				Statement statement = con2.createStatement();
+				res = statement.executeUpdate(sql2);
+				if (res == 0) {
+					update = false;
+					throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+							ExceptionType.UPDATE_FAILED);
+				}
+			}
+			case "PREPARED_STATEMENT": {
+				String sql2 = String.format(
+						"UPDATE employee_payroll SET basic_pay = ? WHERE name = ? AND department = ?;", salary, name,
+						dept);
+				PreparedStatement pstmnt = con2.prepareStatement(sql2);
+				pstmnt.setDouble(1, salary);
+				pstmnt.setString(2, name);
+				pstmnt.setString(3, dept);
+				res = pstmnt.executeUpdate();
+				pstmnt.close();
+				if (res == 0) {
+					update = false;
+					throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+							ExceptionType.UPDATE_FAILED);
+				}
+
+			}
 			}
 		} catch (SQLException e) {
 			update = false;

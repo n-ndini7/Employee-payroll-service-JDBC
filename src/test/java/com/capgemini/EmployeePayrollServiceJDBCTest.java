@@ -3,6 +3,7 @@ package com.capgemini;
 import org.junit.Test;
 
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
+import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollDataJDBC;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 import java.util.List;
@@ -38,7 +39,16 @@ public class EmployeePayrollServiceJDBCTest {
 	@Test
 	public void givenDBShouldUpdateSalaryOfAnEmployee() {
 		try {
-			Assert.assertTrue(e1.UpdateSalary());
+			Assert.assertTrue(e1.UpdateSalary(UpdateType.STATEMENT));
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee() {
+		try {
+			Assert.assertTrue(e1.UpdateSalary(UpdateType.PREPARED_STATEMENT));
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
