@@ -6,15 +6,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.sql.Statement;
+
+import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
 //UC4 - update salary using prepared statement
+//Refactored UC4 
 public class EmpPayrollJDBCOperations {
+	private static PreparedStatement employeePayrollDataStatement;
+	public static EmpPayrollJDBCOperations emp;
 
 	public enum UpdateType {
 		STATEMENT, PREPARED_STATEMENT;
@@ -26,6 +31,13 @@ public class EmpPayrollJDBCOperations {
 
 	public EmpPayrollJDBCOperations() {
 		c1 = new ConnectionCredentials();
+	}
+
+	public static EmpPayrollJDBCOperations getInstance() {
+		if (emp == null) {
+			emp = new EmpPayrollJDBCOperations();
+		}
+		return emp;
 	}
 
 	public static Connection getConnection() throws EmployeePayrollJDBCException {
@@ -48,29 +60,13 @@ public class EmpPayrollJDBCOperations {
 		return connection;
 	}
 
-	public static List<EmployeePayrollDataJDBC> showTable() throws EmployeePayrollJDBCException {
-		List<EmployeePayrollDataJDBC> empList = new ArrayList<EmployeePayrollDataJDBC>();
+	public List<EmployeePayrollData> readEmployeePayrollData() throws EmployeePayrollJDBCException {
+		List<EmployeePayrollData> empList = new ArrayList<EmployeePayrollData>();
 		String sql = "Select * from employee_payroll;";
 		try (Connection conn = getConnection()) {
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
-			while (result.next()) {
-				int id = result.getInt("id");
-				String name = result.getString("name");
-				String gender = result.getString("gender");
-				double basic_pay = result.getDouble("basic_pay");
-				String phone = result.getString("phone_no");
-				String dept = result.getString("department");
-				String add = result.getString("address");
-				double deductions = result.getDouble("deductions");
-				double taxable_pay = result.getDouble("taxable_pay");
-				double tax = result.getDouble("tax");
-				double net_pay = result.getDouble("net_pay");
-				LocalDate startDate = result.getDate("start").toLocalDate();
-				EmployeePayrollDataJDBC emp = new EmployeePayrollDataJDBC(id, name, gender, basic_pay, phone, dept, add,
-						deductions, taxable_pay, tax, net_pay, startDate);
-				empList.add(emp);
-			}
+			empList = this.getEmployeePayrollData(result);
 		} catch (SQLException e) {
 			throw new EmployeePayrollJDBCException("Cannot retrieve data!! \nInvalidDatatypeException thrown...!!",
 					ExceptionType.INVALID_DATA);
@@ -79,7 +75,7 @@ public class EmpPayrollJDBCOperations {
 
 	}
 
-	public static boolean UpdateSalary(UpdateType type) throws EmployeePayrollJDBCException {
+	public boolean UpdateSalary(UpdateType type) throws EmployeePayrollJDBCException {
 		double salary = 3000000;
 		String name = "Terissa";
 		String dept = "Sales";
@@ -125,10 +121,64 @@ public class EmpPayrollJDBCOperations {
 		return update;
 	}
 
+	public List<EmployeePayrollData> getEmployeePayrollData(String name) {
+		List<EmployeePayrollData> employeePayrollData = null;
+		if (employeePayrollDataStatement == null)
+			this.preparedStatementForEmployeeData();
+		try {
+			employeePayrollDataStatement.setString(1, name);
+			ResultSet resultSet = employeePayrollDataStatement.executeQuery();
+			employeePayrollData = getEmployeePayrollData(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollData;
+	}
+
+	private List<EmployeePayrollData> getEmployeePayrollData(ResultSet result) {
+		List<EmployeePayrollData> empList = new ArrayList<>();
+		try {
+			while (result.next()) {
+				int id = result.getInt("id");
+				String name = result.getString("name");
+				String gender = result.getString("gender");
+				double basic_pay = result.getDouble("basic_pay");
+				String phone = result.getString("phone_no");
+				String dept = result.getString("department");
+				String add = result.getString("address");
+				double deductions = result.getDouble("deductions");
+				double taxable_pay = result.getDouble("taxable_pay");
+				double tax = result.getDouble("tax");
+				double net_pay = result.getDouble("net_pay");
+				Date startDate = result.getDate("start");
+				EmployeePayrollData emp = new EmployeePayrollData(id, name, gender, basic_pay, phone, dept, add,
+						deductions, taxable_pay, tax, net_pay, startDate);
+				empList.add(emp);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		// System.out.println(empList);
+		return empList;
+	}
+
+	private void preparedStatementForEmployeeData() {
+		try {
+			Connection con = getConnection();
+			String sql = "select * from employee_payroll where name = ?";
+			employeePayrollDataStatement = con.prepareStatement(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private static void listDrivers() {
 		Enumeration<Driver> driverList = DriverManager.getDrivers();
 		while (driverList.hasMoreElements()) {
 			Driver driverClass = driverList.nextElement();
 		}
 	}
+
 }
