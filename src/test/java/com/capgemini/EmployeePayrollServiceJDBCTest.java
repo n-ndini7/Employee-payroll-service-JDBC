@@ -35,4 +35,13 @@ public class EmployeePayrollServiceJDBCTest {
 
 	}
 
+	@Test
+	public void givenDBShouldUpdateSalaryOfAnEmployee() {
+		try {
+			Assert.assertTrue(e1.UpdateSalary());
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

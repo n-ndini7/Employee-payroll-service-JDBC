@@ -12,7 +12,7 @@ import java.util.List;
 import java.sql.Statement;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC2-retrieve data from the table
+//UC3 - Update salary using update statement
 public class EmpPayrollJDBCOperations {
 
 	private static ConnectionCredentials c1 = null;
@@ -27,17 +27,14 @@ public class EmpPayrollJDBCOperations {
 		Connection connection = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Driver loaded");
 		} catch (ClassNotFoundException e) {
 			throw new EmployeePayrollJDBCException("Cannot connect to the JDBC Driver!! \nDriverException thrown...",
 					ExceptionType.CANNOT_LOAD_DRIVER);
 		}
 		listDrivers();
 		try {
-			System.out.println("Connecting to database:" + credentials[0]);
 			connection = DriverManager.getConnection(credentials[0], credentials[1], credentials[2]);
 			status = "Connection Successfull";
-			System.out.println(status);
 		} catch (Exception e) {
 			throw new EmployeePayrollJDBCException("Unable to Connect!! \nWrongLoginCredentialsException thrown... ",
 					ExceptionType.WRONG_CREDENTIALS);
@@ -76,11 +73,32 @@ public class EmpPayrollJDBCOperations {
 
 	}
 
+	public static boolean UpdateSalary() throws EmployeePayrollJDBCException {
+		double salary = 3000000;
+		String name = "Terissa";
+		boolean update = true;
+		String sql2 = String.format("UPDATE employee_payroll SET basic_pay = %.2f WHERE name = '%s';", salary, name);
+		int res = 0;
+		try (Connection con2 = getConnection()) {
+			Statement statement = con2.createStatement();
+			res = statement.executeUpdate(sql2);
+			if (res == 0) {
+				update = false;
+				throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+						ExceptionType.UPDATE_FAILED);
+			}
+		} catch (SQLException e) {
+			update = false;
+			throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+					ExceptionType.UPDATE_FAILED);
+		}
+		return update;
+	}
+
 	private static void listDrivers() {
 		Enumeration<Driver> driverList = DriverManager.getDrivers();
 		while (driverList.hasMoreElements()) {
 			Driver driverClass = driverList.nextElement();
-			System.out.println("   " + driverClass.getClass().getName());
 		}
 	}
 }
