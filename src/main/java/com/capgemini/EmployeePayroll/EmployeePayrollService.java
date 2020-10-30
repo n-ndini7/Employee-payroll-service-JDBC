@@ -163,4 +163,11 @@ public class EmployeePayrollService {
 
 	}
 
+	public List<EmployeePayrollData> getEmployeeForDateRange(IOService DB_IO, Date startDate, Date endDate) {
+		if (DB_IO.equals(IOService.DB_IO)) {
+			return employeePayrollDBService.QueryForGivenDateRange(startDate, endDate);
+		}
+		return null;
+	}
+
 }
