@@ -1,0 +1,3 @@
+ID = 200456, Name = Warren Buffet, Salary = 500000.0
+ID = 200457, Name = Amanico Ortega, Salary = 200000.0
+ID = 200551, Name = Larry Ellison, Salary = 800000.0
