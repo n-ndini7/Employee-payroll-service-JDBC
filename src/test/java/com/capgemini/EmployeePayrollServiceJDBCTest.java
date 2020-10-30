@@ -6,12 +6,14 @@ import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayroll.EmployeePayrollService;
 import com.capgemini.EmployeePayroll.EmployeePayrollService.IOService;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
+import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryType;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 
@@ -75,8 +77,17 @@ public class EmployeePayrollServiceJDBCTest {
 		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
 		Date startDate = Date.valueOf("2018-01-01");
 		Date endDate = Date.valueOf(LocalDate.now());
-		List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(IOService.DB_IO,
-				startDate, endDate);
+		List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(IOService.DB_IO, startDate,
+				endDate);
 		Assert.assertEquals(3, empList.size());
+	}
+
+	@Test
+	public void givenDBShouldRetrieveSalaryGroupByGenderAccordingTotypeAsked() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
+		Map<String, Double> salaryMap = employeePayrollService.readAverageSalaryByGender(IOService.DB_IO,
+				SalaryType.SUM);
+		Assert.assertTrue(salaryMap.get("M").equals(6000000.0) && salaryMap.get("F").equals(3000000.0));
 	}
 }
