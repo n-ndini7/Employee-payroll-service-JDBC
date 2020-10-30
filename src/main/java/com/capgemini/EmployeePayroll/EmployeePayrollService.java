@@ -1,9 +1,11 @@
 package com.capgemini.EmployeePayroll;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
+import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryType;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
@@ -166,6 +168,13 @@ public class EmployeePayrollService {
 	public List<EmployeePayrollData> getEmployeeForDateRange(IOService DB_IO, Date startDate, Date endDate) {
 		if (DB_IO.equals(IOService.DB_IO)) {
 			return employeePayrollDBService.QueryForGivenDateRange(startDate, endDate);
+		}
+		return null;
+	}
+
+	public Map<String, Double> readAverageSalaryByGender(IOService DB_IO, SalaryType type) {
+		if (DB_IO.equals(IOService.DB_IO)) {
+			return employeePayrollDBService.QueryForSalaryByGender(type);
 		}
 		return null;
 	}

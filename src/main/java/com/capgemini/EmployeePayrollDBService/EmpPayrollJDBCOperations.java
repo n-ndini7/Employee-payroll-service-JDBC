@@ -9,16 +9,24 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.sql.Statement;
 
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC5 - retrieve employees for a given date range
+//UC6 - find sum , average,minimum and maximum salary of female and male employees
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
+
+	public enum SalaryType {
+		AVG, SUM, MAX, MIN;
+	}
+
+	SalaryType type2;
 
 	public enum UpdateType {
 		STATEMENT, PREPARED_STATEMENT;
@@ -187,6 +195,40 @@ public class EmpPayrollJDBCOperations {
 			e1.printStackTrace();
 		}
 		return empList;
+	}
+
+	public Map<String, Double> QueryForSalaryByGender(SalaryType type) {
+		String type2 = type.toString();
+		String sql6 = "";
+		Map<String, Double> SalaryMap = new HashMap<>();
+		try (Connection connection = getConnection()) {
+			switch (type2) {
+			case "AVG": {
+				sql6 = "select gender,avg(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+			}
+			case "MAX": {
+				sql6 = "select gender,max(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+			}
+			case "MIN": {
+				sql6 = "select gender,min(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+			}
+			case "SUM": {
+				sql6 = "select gender,sum(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+			}
+			}
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql6);
+			while (result.next()) {
+				String gender = result.getString("gender");
+				double salary = result.getDouble("Retrived_Salary");
+				SalaryMap.put(gender, salary);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e1) {
+			e1.printStackTrace();
+		}
+		return SalaryMap;
 	}
 
 	private static void listDrivers() {
