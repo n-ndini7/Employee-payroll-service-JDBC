@@ -68,15 +68,4 @@ public class EmployeePayrollServiceJDBCTest {
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terissa", 3000000.00);
 		Assert.assertTrue(result);
 	}
-
-	@Test
-	public void givenDBShoulRetreiveEmployeesForASpecficDateRange() {
-		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
-		Date startDate = Date.valueOf("2018-01-01");
-		Date endDate = Date.valueOf(LocalDate.now());
-		List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(IOService.DB_IO,
-				startDate, endDate);
-		Assert.assertEquals(3, empList.size());
-	}
 }
