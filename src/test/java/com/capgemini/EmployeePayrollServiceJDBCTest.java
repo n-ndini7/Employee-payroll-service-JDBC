@@ -3,6 +3,8 @@ package com.capgemini;
 import org.junit.Test;
 
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
+import com.capgemini.EmployeePayroll.EmployeePayrollService;
+import com.capgemini.EmployeePayroll.EmployeePayrollService.IOService;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
@@ -54,12 +56,13 @@ public class EmployeePayrollServiceJDBCTest {
 		}
 	}
 
-	//@Test
-	//public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee_ShouldBeInSyncWithDB() {
-		//EmpPayrollJDBCOperations employeePayrollService = new EmpPayrollJDBCOperations();
-		//List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData();
-		//employeePayrollService.UpdateSalary(UpdateType.PREPARED_STATEMENT);
-	//	boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa", 2000000.00);
-		//Assert.assertTrue(result);
-	//}
+	@Test
+	public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee_ShouldBeInSyncWithDB() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		List<EmployeePayrollData> employeePayrollData = employeePayrollService
+				.readEmployeePayrollDataDB(IOService.DB_IO);
+		employeePayrollService.updateEmployeeSalaryUsingPrepareStatement("Terissa", 3000000.00);
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terissa", 3000000.00);
+		Assert.assertTrue(result);
+	}
 }
