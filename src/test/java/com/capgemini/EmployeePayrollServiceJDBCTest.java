@@ -90,4 +90,5 @@ public class EmployeePayrollServiceJDBCTest {
 				SalaryType.SUM);
 		Assert.assertTrue(salaryMap.get("M").equals(6000000.0) && salaryMap.get("F").equals(3000000.0));
 	}
+  
 }
