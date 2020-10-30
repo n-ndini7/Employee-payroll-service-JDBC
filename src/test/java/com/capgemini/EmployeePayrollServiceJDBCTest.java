@@ -2,9 +2,9 @@ package com.capgemini;
 
 import org.junit.Test;
 
+import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
-import com.capgemini.EmployeePayrollDBService.EmployeePayrollDataJDBC;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 import java.util.List;
 
@@ -28,8 +28,8 @@ public class EmployeePayrollServiceJDBCTest {
 	@Test
 	public void givenDBShoulRetrieveContentsFromTheTable() {
 		try {
-			List<EmployeePayrollDataJDBC> list1 = e1.showTable();
-			Assert.assertEquals(7, list1.size());
+			List<EmployeePayrollData> list1 = e1.readEmployeePayrollData();
+			Assert.assertEquals(3, list1.size());
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
@@ -54,4 +54,12 @@ public class EmployeePayrollServiceJDBCTest {
 		}
 	}
 
+	//@Test
+	//public void givebDBShouldUpdateSalaryUsingPreparedStatementOfAnEmployee_ShouldBeInSyncWithDB() {
+		//EmpPayrollJDBCOperations employeePayrollService = new EmpPayrollJDBCOperations();
+		//List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData();
+		//employeePayrollService.UpdateSalary(UpdateType.PREPARED_STATEMENT);
+	//	boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa", 2000000.00);
+		//Assert.assertTrue(result);
+	//}
 }
