@@ -18,7 +18,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC11 - add employee to the new implemented ER diagram tables
+//UC12 - remove employee from the database 
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
@@ -398,6 +398,59 @@ public class EmpPayrollJDBCOperations {
 			}
 		}
 		return res1 + res2 + res3 + res4 + res5;
+	}
+
+	public int removeEmployeeFromDB(EmployeePayrollData e1) {
+		Connection connection = null;
+		int res = 0;
+		try {
+			connection = this.getConnection();
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+		int employeeId = 0;
+		try (Statement statement = connection.createStatement()) {
+			String sql = String.format("select * from employee_payroll2 where name = '%s';", e1.name);
+			ResultSet result = statement.executeQuery(sql);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			String sql = String.format("update employee_payroll2 set is_active = false where id = %d;", e1.id);
+			res = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e9) {
+				e9.printStackTrace();
+			}
+		}
+		try {
+			try {
+				connection.commit();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return res;
 	}
 
 	private static void listDrivers() {

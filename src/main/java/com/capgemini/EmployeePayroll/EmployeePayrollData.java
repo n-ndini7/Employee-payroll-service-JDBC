@@ -63,6 +63,10 @@ public class EmployeePayrollData {
 		this.company = company;
 	}
 
+	public EmployeePayrollData() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String toString() {
 		return "ID = " + id + ", Name = " + name + ", Gender = " + gender + ", Basic Pay = " + basic_pay + ", Phone = "

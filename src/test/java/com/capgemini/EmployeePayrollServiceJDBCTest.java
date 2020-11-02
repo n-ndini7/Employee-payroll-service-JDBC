@@ -91,7 +91,7 @@ public class EmployeePayrollServiceJDBCTest {
 		Assert.assertTrue(salaryMap.get("M").equals(12000000.0) && salaryMap.get("F").equals(12000000.0));
 	}
 
-	@Test
+	/*@Test
 	public void givenDBshouldAddNewAmployeePayrollToTheDB() {
 		Date d1 = Date.valueOf("2020-02-11");
 		EmployeePayrollData e1 = new EmployeePayrollData(11, "Mark", "M", 6000000.0, d1);
@@ -118,6 +118,18 @@ public class EmployeePayrollServiceJDBCTest {
 			e.printStackTrace();
 		}
 		boolean result = emp.checkEmployeePayrollInSyncWithDB("Rigel", 3000000.00);
+		Assert.assertTrue(result);
+	}*/
+
+	@Test
+	public void givenEmployee_WhenRemovedFromPayroll_ShouldSyncWithDB() {
+		EmployeePayrollData e1 = new EmployeePayrollData();
+		e1.name = "Bill";
+		e1.id = 1;
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
+		employeePayrollService.removeEmployeeFromDB(e1);
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Bill", 3000000);
 		Assert.assertTrue(result);
 	}
 }

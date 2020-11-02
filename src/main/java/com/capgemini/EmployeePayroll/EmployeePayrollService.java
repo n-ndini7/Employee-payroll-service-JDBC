@@ -10,10 +10,7 @@ import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateTyp
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
-
-//UC9 - implement ER diagram in database;
 
 public class EmployeePayrollService {
 
@@ -201,4 +198,11 @@ public class EmployeePayrollService {
 		return check2;
 	}
 
+	public boolean removeEmployeeFromDB(EmployeePayrollData e1) {
+		int check = employeePayrollDBService.removeEmployeeFromDB(e1);
+		if (check == 1)
+			return true;
+		else
+			return false;
+	}
 }
