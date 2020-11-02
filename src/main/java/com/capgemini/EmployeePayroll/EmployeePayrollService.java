@@ -181,14 +181,11 @@ public class EmployeePayrollService {
 
 	public int addEmployeePayrollDatatoDB(EmployeePayrollData e) {
 		int check2 = 0;
-		try {
-			EmpPayrollJDBCOperations.addEmployeePayroll(e);
+		int count = EmpPayrollJDBCOperations.addEmployeeWithPayrollDetails(e);
+		if (count == 2) {
 			employeeList.add(e);
 			check2++;
-		} catch (EmployeePayrollJDBCException e1) {
-			e1.printStackTrace();
 		}
-
 		return check2;
 	}
 

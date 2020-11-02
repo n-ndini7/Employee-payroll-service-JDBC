@@ -39,6 +39,14 @@ public class EmployeePayrollData {
 		this.startDate = start;
 	}
 
+	public EmployeePayrollData(int id, String name, String gender, double basic_pay, Date start) {
+		this.id = id;
+		this.name = name;
+		this.gender = gender;
+		this.basic_pay = basic_pay;
+		this.startDate = start;
+	}
+
 	@Override
 	public String toString() {
 		return "ID = " + id + ", Name = " + name + ", Gender = " + gender + ", Basic Pay = " + basic_pay + ", Phone = "

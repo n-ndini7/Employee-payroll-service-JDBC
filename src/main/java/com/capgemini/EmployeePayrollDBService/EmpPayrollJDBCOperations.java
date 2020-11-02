@@ -12,12 +12,15 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.math3.geometry.spherical.oned.Sphere1D;
+
 import java.sql.Statement;
 
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC7 - add new employee to the database and sync it with DB
+//UC8 - record should be into employee_payroll2 table and also payroll_details table
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
@@ -69,7 +72,7 @@ public class EmpPayrollJDBCOperations {
 
 	public List<EmployeePayrollData> readEmployeePayrollData() throws EmployeePayrollJDBCException {
 		List<EmployeePayrollData> empList = new ArrayList<EmployeePayrollData>();
-		String sql = "Select * from employee_payroll;";
+		String sql = "Select * from employee_payroll2;";
 		try (Connection conn = getConnection()) {
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -85,7 +88,6 @@ public class EmpPayrollJDBCOperations {
 	public boolean UpdateSalary(UpdateType type) throws EmployeePayrollJDBCException {
 		double salary = 3000000;
 		String name = "Terissa";
-		String dept = "Sales";
 		boolean update = true;
 		int res = 0;
 		try (Connection con2 = getConnection()) {
@@ -103,13 +105,11 @@ public class EmpPayrollJDBCOperations {
 				}
 			}
 			case "PREPARED_STATEMENT": {
-				String sql2 = String.format(
-						"UPDATE employee_payroll SET basic_pay = ? WHERE name = ? AND department = ?;", salary, name,
-						dept);
+				String sql2 = String.format("UPDATE employee_payroll2 SET basic_pay = ? WHERE name = ? ;", salary,
+						name);
 				PreparedStatement pstmnt = con2.prepareStatement(sql2);
 				pstmnt.setDouble(1, salary);
 				pstmnt.setString(2, name);
-				pstmnt.setString(3, dept);
 				res = pstmnt.executeUpdate();
 				pstmnt.close();
 				if (res == 0) {
@@ -150,29 +150,20 @@ public class EmpPayrollJDBCOperations {
 				String name = result.getString("name");
 				String gender = result.getString("gender");
 				double basic_pay = result.getDouble("basic_pay");
-				String phone = result.getString("phone_no");
-				String dept = result.getString("department");
-				String add = result.getString("address");
-				double deductions = result.getDouble("deductions");
-				double taxable_pay = result.getDouble("taxable_pay");
-				double tax = result.getDouble("tax");
-				double net_pay = result.getDouble("net_pay");
 				Date startDate = result.getDate("start");
-				EmployeePayrollData emp = new EmployeePayrollData(id, name, gender, basic_pay, phone, dept, add,
-						deductions, taxable_pay, tax, net_pay, startDate);
+				EmployeePayrollData emp = new EmployeePayrollData(id, name, gender, basic_pay, startDate);
 				empList.add(emp);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(empList);
 		return empList;
 	}
 
 	private void preparedStatementForEmployeeData() {
 		try {
 			Connection con = getConnection();
-			String sql = "select * from employee_payroll where name = ?";
+			String sql = "select * from employee_payroll2 where name = ?";
 			employeePayrollDataStatement = con.prepareStatement(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -182,7 +173,7 @@ public class EmpPayrollJDBCOperations {
 	}
 
 	public List<EmployeePayrollData> QueryForGivenDateRange(Date startDate, Date endDate) {
-		String sql = String.format("select * from employee_payroll where start between '%s' and '%s';", startDate,
+		String sql = String.format("select * from employee_payroll2 where start between '%s' and '%s';", startDate,
 				endDate);
 		List<EmployeePayrollData> empList = new ArrayList<>();
 		try (Connection connection = this.getConnection()) {
@@ -204,16 +195,16 @@ public class EmpPayrollJDBCOperations {
 		try (Connection connection = getConnection()) {
 			switch (type2) {
 			case "AVG": {
-				sql6 = "select gender,avg(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+				sql6 = "select gender,avg(basic_pay) as Retrived_Salary from employee_payroll2 group by gender;";
 			}
 			case "MAX": {
-				sql6 = "select gender,max(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+				sql6 = "select gender,max(basic_pay) as Retrived_Salary from employee_payroll2 group by gender;";
 			}
 			case "MIN": {
-				sql6 = "select gender,min(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+				sql6 = "select gender,min(basic_pay) as Retrived_Salary from employee_payroll2 group by gender;";
 			}
 			case "SUM": {
-				sql6 = "select gender,sum(basic_pay) as Retrived_Salary from employee_payroll group by gender;";
+				sql6 = "select gender,sum(basic_pay) as Retrived_Salary from employee_payroll2 group by gender;";
 			}
 			}
 			Statement statement = connection.createStatement();
@@ -234,10 +225,8 @@ public class EmpPayrollJDBCOperations {
 	public static int addEmployeePayroll(EmployeePayrollData e1) throws EmployeePayrollJDBCException {
 		int res = 0;
 		String sql7 = String.format(
-				"insert into employee_payroll(id,name,phone_no,address,department,gender,basic_pay,deductions,taxable_pay,tax,net_pay,start)"
-						+ " values ('%d','%s','%s','%s','%s','%s','%.2f','%.2f','%.2f','%.2f','%.2f','%s');",
-				e1.id, e1.name, e1.phone, e1.add, e1.dept, e1.gender, e1.basic_pay, e1.deductions, e1.taxable_pay,
-				e1.tax, e1.net_pay, e1.startDate);
+				"insert into employee_payroll2(name,gender,basic_pay,start)" + " values ('%s','%s','%.2f','%s');",
+				e1.name, e1.gender, e1.basic_pay, e1.startDate);
 		try (Connection connection = getConnection()) {
 			Statement statement = connection.createStatement();
 			res = statement.executeUpdate(sql7);
@@ -247,6 +236,32 @@ public class EmpPayrollJDBCOperations {
 			e2.printStackTrace();
 		}
 		return res;
+	}
+
+	public static int addEmployeeWithPayrollDetails(EmployeePayrollData e1) {
+		int res = 0, res2 = 0;
+		try (Connection connection = getConnection()) {
+			String sql8 = String.format(
+					"insert into employee_payroll2 (id,name,basic_pay,start,gender) values ('%d','%s',%.2f,'%s','%s');",
+					e1.id, e1.name, e1.basic_pay, e1.startDate, e1.gender);
+			Statement statement1 = connection.createStatement();
+			res = statement1.executeUpdate(sql8);
+			e1.deductions = e1.basic_pay * 0.2;
+			e1.taxable_pay = e1.basic_pay - e1.deductions;
+			e1.tax = e1.taxable_pay * 0.1;
+			e1.net_pay = e1.basic_pay - e1.tax;
+			String sql = String.format(
+					"insert into payroll_details (empid,basic_pay,deductions,taxable_pay,tax,net_pay) values ('%d','%.2f','%.2f','%.2f','%.2f','%.2f');",
+					e1.id, e1.basic_pay, e1.deductions, e1.taxable_pay, e1.tax, e1.net_pay);
+			Statement statement2 = connection.createStatement();
+			res2 = statement2.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e2) {
+			e2.printStackTrace();
+		}
+		System.out.println("res+res2" + (res + res2));
+		return res + res2;
 	}
 
 	private static void listDrivers() {
