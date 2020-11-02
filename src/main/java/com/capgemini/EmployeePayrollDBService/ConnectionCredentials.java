@@ -3,7 +3,7 @@ package com.capgemini.EmployeePayrollDBService;
 //This class contains all login credentials of the SQL server(Confidentiality :High)
 public class ConnectionCredentials {
 
-	String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
+	String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?allowPublicKeyRetrieval=true&useSSL=false";
 	String userName = "root";
 	String password = "Rn@11041997#";
 
@@ -12,5 +12,3 @@ public class ConnectionCredentials {
 		return confidential;
 	}
 }
-
-
