@@ -97,7 +97,11 @@ public class EmployeePayrollServiceJDBCTest {
 		EmployeePayrollData e1 = new EmployeePayrollData(11, "Mark", "M", 6000000.0, d1);
 		EmployeePayrollService emp = new EmployeePayrollService();
 		emp.readEmployeePayrollDataDB(IOService.DB_IO);
-		emp.addEmployeePayrollDatatoDB(e1);
+		try {
+			emp.addEmployeePayrollDatatoDB(e1);
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
 		boolean result = emp.checkEmployeePayrollInSyncWithDB("Mark", 6000000.00);
 		Assert.assertTrue(result);
 	}

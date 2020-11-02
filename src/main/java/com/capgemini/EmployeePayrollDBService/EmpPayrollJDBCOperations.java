@@ -238,14 +238,39 @@ public class EmpPayrollJDBCOperations {
 		return res;
 	}
 
-	public static int addEmployeeWithPayrollDetails(EmployeePayrollData e1) {
+	public static int addEmployeeWithPayrollDetails(EmployeePayrollData e1) throws EmployeePayrollJDBCException {
 		int res = 0, res2 = 0;
-		try (Connection connection = getConnection()) {
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(true);
+		} catch (SQLException e4) {
+			throw new EmployeePayrollJDBCException("Cannot insert data!! \nInsertRecordFailedException thrown...!!",
+					ExceptionType.INSERT_FAILED);
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+		try (Statement statement1 = connection.createStatement();) {
 			String sql8 = String.format(
 					"insert into employee_payroll2 (id,name,basic_pay,start,gender) values ('%d','%s',%.2f,'%s','%s');",
 					e1.id, e1.name, e1.basic_pay, e1.startDate, e1.gender);
-			Statement statement1 = connection.createStatement();
 			res = statement1.executeUpdate(sql8);
+		} catch (SQLException e4) {
+			try {
+				connection.rollback();
+			} catch (SQLException er) {
+				throw new EmployeePayrollJDBCException("Cannot insert data!!\nInsertRecordFailedException thrown...!!",
+						ExceptionType.INSERT_FAILED);
+			}
+		}
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(true);
+		} catch (SQLException er) {
+			throw new EmployeePayrollJDBCException("Cannot insert data!! \nInsertRecordFailedException thrown...!!",
+					ExceptionType.INSERT_FAILED);
+		}
+		try (Statement statement2 = connection.createStatement();) {
 			e1.deductions = e1.basic_pay * 0.2;
 			e1.taxable_pay = e1.basic_pay - e1.deductions;
 			e1.tax = e1.taxable_pay * 0.1;
@@ -253,14 +278,23 @@ public class EmpPayrollJDBCOperations {
 			String sql = String.format(
 					"insert into payroll_details (empid,basic_pay,deductions,taxable_pay,tax,net_pay) values ('%d','%.2f','%.2f','%.2f','%.2f','%.2f');",
 					e1.id, e1.basic_pay, e1.deductions, e1.taxable_pay, e1.tax, e1.net_pay);
-			Statement statement2 = connection.createStatement();
 			res2 = statement2.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (EmployeePayrollJDBCException e2) {
-			e2.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException er) {
+				throw new EmployeePayrollJDBCException("Cannot insert data!!\nInsertRecordFailedException thrown...!!",
+						ExceptionType.INSERT_FAILED);
+			}
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		System.out.println("res+res2" + (res + res2));
 		return res + res2;
 	}
 
