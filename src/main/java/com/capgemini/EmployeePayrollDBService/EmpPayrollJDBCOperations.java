@@ -17,7 +17,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC6 - find sum , average,minimum and maximum salary of female and male employees
+//UC7 - add new employee to the database and sync it with DB
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
@@ -51,7 +51,7 @@ public class EmpPayrollJDBCOperations {
 		String[] credentials = c1.getCredentials();
 		Connection connection = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			throw new EmployeePayrollJDBCException("Cannot connect to the JDBC Driver!! \nDriverException thrown...",
 					ExceptionType.CANNOT_LOAD_DRIVER);
@@ -229,6 +229,24 @@ public class EmpPayrollJDBCOperations {
 			e1.printStackTrace();
 		}
 		return SalaryMap;
+	}
+
+	public static int addEmployeePayroll(EmployeePayrollData e1) throws EmployeePayrollJDBCException {
+		int res = 0;
+		String sql7 = String.format(
+				"insert into employee_payroll(id,name,phone_no,address,department,gender,basic_pay,deductions,taxable_pay,tax,net_pay,start)"
+						+ " values ('%d','%s','%s','%s','%s','%s','%.2f','%.2f','%.2f','%.2f','%.2f','%s');",
+				e1.id, e1.name, e1.phone, e1.add, e1.dept, e1.gender, e1.basic_pay, e1.deductions, e1.taxable_pay,
+				e1.tax, e1.net_pay, e1.startDate);
+		try (Connection connection = getConnection()) {
+			Statement statement = connection.createStatement();
+			res = statement.executeUpdate(sql7);
+		} catch (EmployeePayrollJDBCException e2) {
+			e2.printStackTrace();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		return res;
 	}
 
 	private static void listDrivers() {

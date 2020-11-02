@@ -36,7 +36,7 @@ public class EmployeePayrollServiceJDBCTest {
 	public void givenDBShoulRetrieveContentsFromTheTable() {
 		try {
 			List<EmployeePayrollData> list1 = e1.readEmployeePayrollData();
-			Assert.assertEquals(3, list1.size());
+			Assert.assertEquals(4, list1.size());
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +79,7 @@ public class EmployeePayrollServiceJDBCTest {
 		Date endDate = Date.valueOf(LocalDate.now());
 		List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(IOService.DB_IO, startDate,
 				endDate);
-		Assert.assertEquals(3, empList.size());
+		Assert.assertEquals(4, empList.size());
 	}
 
 	@Test
@@ -88,6 +88,18 @@ public class EmployeePayrollServiceJDBCTest {
 		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
 		Map<String, Double> salaryMap = employeePayrollService.readAverageSalaryByGender(IOService.DB_IO,
 				SalaryType.SUM);
-		Assert.assertTrue(salaryMap.get("M").equals(6000000.0) && salaryMap.get("F").equals(3000000.0));
+		Assert.assertTrue(salaryMap.get("M").equals(6000000.0) && salaryMap.get("F").equals(9000000.0));
 	}
+
+	@Test
+	public void givenDBshouldAddNewAmployeePayrollToTheDB() {
+		Date d1 = Date.valueOf("2020-03-03");
+		EmployeePayrollData e1 = new EmployeePayrollData("Charlotte", "F", 6000000.0, d1);
+		EmployeePayrollService emp = new EmployeePayrollService();
+		emp.readEmployeePayrollDataDB(IOService.DB_IO);
+		emp.addEmployeePayrollDatatoDB(e1);
+		boolean result = emp.checkEmployeePayrollInSyncWithDB("Charlotte", 6000000.00);
+		Assert.assertTrue(result);
+	}
+
 }
