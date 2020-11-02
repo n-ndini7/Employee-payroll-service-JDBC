@@ -143,6 +143,7 @@ public class EmployeePayrollService {
 		for (EmployeePayrollData data : employeeList) {
 			if (data.name.equals(name)) {
 				if (Double.compare(data.basic_pay, salary) == 0) {
+					//System.out.println(data);
 					return true;
 				}
 			}
@@ -179,7 +180,7 @@ public class EmployeePayrollService {
 		return null;
 	}
 
-	public int addEmployeePayrollDatatoDB(EmployeePayrollData e) {
+	public int addEmployeePayrollDatatoDB(EmployeePayrollData e) throws EmployeePayrollJDBCException {
 		int check2 = 0;
 		int count = EmpPayrollJDBCOperations.addEmployeeWithPayrollDetails(e);
 		if (count == 2) {
