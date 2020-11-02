@@ -15,6 +15,9 @@ public class EmployeePayrollData {
 	public double tax;
 	public double net_pay;
 	public Date startDate;
+	public int deptid;
+	public String company;
+	public int compid;
 
 	public EmployeePayrollData(int id, String name, String gender, double basic_pay, String phone, String dept,
 			String add, double deductions, double taxable_pay, double tax, double net_pay, Date start) {
@@ -47,11 +50,25 @@ public class EmployeePayrollData {
 		this.startDate = start;
 	}
 
+	public EmployeePayrollData(int id, String name, String gender, double basic_pay, Date start, int deptid,
+			String dept, int compid, String company) {
+		this.id = id;
+		this.name = name;
+		this.gender = gender;
+		this.basic_pay = basic_pay;
+		this.startDate = start;
+		this.deptid = deptid;
+		this.dept = dept;
+		this.compid = compid;
+		this.company = company;
+	}
+
 	@Override
 	public String toString() {
 		return "ID = " + id + ", Name = " + name + ", Gender = " + gender + ", Basic Pay = " + basic_pay + ", Phone = "
 				+ phone + ", Department=" + dept + ". Address=" + add + ", Deductions=" + deductions + ", Taxable Pay="
-				+ taxable_pay + ", Tax=" + tax + ", Net Pay= " + net_pay + ", Start Date=" + startDate;
+				+ taxable_pay + ", Tax=" + tax + ", Net Pay= " + net_pay + ", Start Date=" + startDate + ", Company: "
+				+ company;
 	}
 
 }
