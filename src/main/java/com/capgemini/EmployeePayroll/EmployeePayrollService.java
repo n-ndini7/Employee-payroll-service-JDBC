@@ -13,7 +13,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-//UC6 - added read data function to read employee payroll data so that some analysis can be performed  
+//UC9 - implement ER diagram in database;
 
 public class EmployeePayrollService {
 
@@ -143,7 +143,7 @@ public class EmployeePayrollService {
 		for (EmployeePayrollData data : employeeList) {
 			if (data.name.equals(name)) {
 				if (Double.compare(data.basic_pay, salary) == 0) {
-					//System.out.println(data);
+					// System.out.println(data);
 					return true;
 				}
 			}
@@ -187,6 +187,7 @@ public class EmployeePayrollService {
 			employeeList.add(e);
 			check2++;
 		}
+		System.out.println(employeeList);
 		return check2;
 	}
 
