@@ -191,4 +191,14 @@ public class EmployeePayrollService {
 		return check2;
 	}
 
+	public int addEmployeePayrollDatatoDBER(EmployeePayrollData e) throws EmployeePayrollJDBCException {
+		int check2 = 0;
+		int count = EmpPayrollJDBCOperations.addEmployeeWithPayrollDetailsER(e);
+		if (count == 5) {
+			employeeList.add(e);
+			check2++;
+		}
+		return check2;
+	}
+
 }

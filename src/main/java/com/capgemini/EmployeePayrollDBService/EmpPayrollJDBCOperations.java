@@ -20,7 +20,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC8 - record should be into employee_payroll2 table and also payroll_details table
+//UC11 - add employee to the new implemented ER diagram tables
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
@@ -296,6 +296,110 @@ public class EmpPayrollJDBCOperations {
 			}
 		}
 		return res + res2;
+	}
+
+	public static int addEmployeeWithPayrollDetailsER(EmployeePayrollData e1) {
+		int res1 = 0, res2 = 0, res3 = 0, res4 = 0, res5 = 0;
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		}
+		try (Statement statement = connection.createStatement()) {
+			String sql = String.format("insert into company2(companyid,company_name) values ('%d','%s');", e1.compid,
+					e1.company);
+			res1 = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e9) {
+				e9.printStackTrace();
+			}
+		}
+		if (res1 > 0) {
+			try (Statement statement = connection.createStatement()) {
+				String sql = String.format(
+						"insert into employee_payroll2 (id,name,basic_pay,start,gender) values ('%d','%s',%.2f,'%s','%s');",
+						e1.id, e1.name, e1.basic_pay, e1.startDate, e1.gender);
+				res2 = statement.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException e9) {
+					e9.printStackTrace();
+				}
+			}
+		}
+		if (res2 > 0) {
+			try (Statement statement = connection.createStatement()) {
+				String sql = String.format("insert into department2(deptid,deptname,empid) values ('%d','%s','%d');",
+						e1.deptid, e1.dept, e1.id);
+				res3 = statement.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException e9) {
+					e9.printStackTrace();
+				}
+			}
+		}
+		if (res3 > 0) {
+			try (Statement statement = connection.createStatement()) {
+				e1.deductions = e1.basic_pay * 0.2;
+				e1.taxable_pay = e1.basic_pay - e1.deductions;
+				e1.tax = e1.taxable_pay * 0.1;
+				e1.net_pay = e1.basic_pay - e1.tax;
+				String sql = String.format(
+						"insert into payroll_details (empid,basic_pay,deductions,taxable_pay,tax,net_pay) values ('%d','%.2f',%.2f,%.2f,%.2f,%.2f);",
+						e1.id, e1.basic_pay, e1.deductions, e1.taxable_pay, e1.tax, e1.net_pay);
+				res4 = statement.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException e9) {
+					e9.printStackTrace();
+				}
+			}
+		}
+		if (res4 > 0) {
+			try (Statement statement = connection.createStatement()) {
+				String sql = String.format("insert into employee_department2 (empid,deptid) values ('%d','%d');", e1.id,
+						e1.deptid);
+				res5 = statement.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException e9) {
+					e9.printStackTrace();
+				}
+			}
+		}
+
+		try {
+			try {
+				connection.commit();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return res1 + res2 + res3 + res4 + res5;
 	}
 
 	private static void listDrivers() {
