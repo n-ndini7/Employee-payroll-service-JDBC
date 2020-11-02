@@ -101,5 +101,4 @@ public class EmployeePayrollServiceJDBCTest {
 		boolean result = emp.checkEmployeePayrollInSyncWithDB("Charlotte", 6000000.00);
 		Assert.assertTrue(result);
 	}
-
 }
