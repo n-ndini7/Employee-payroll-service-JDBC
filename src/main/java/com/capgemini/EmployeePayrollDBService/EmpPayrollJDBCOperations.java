@@ -1,14 +1,12 @@
 package com.capgemini.EmployeePayrollDBService;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +16,10 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//MultiThreading_UC2 - add multiple employees to the database using threads and record start and stop time to determine the time taken for execution 
+//MultiThreading_UC3 - Demonstrate thread synchronization using connection counter 
 public class EmpPayrollJDBCOperations {
+	private static int connectionCounter = 0;
+	private PreparedStatement employeePayrollDatastatement;
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
 
@@ -48,23 +48,17 @@ public class EmpPayrollJDBCOperations {
 		return emp;
 	}
 
-	public static Connection getConnection() throws EmployeePayrollJDBCException {
-		String[] credentials = c1.getCredentials();
+	public static synchronized Connection getConnection() throws EmployeePayrollJDBCException, SQLException {
+		connectionCounter++;
+		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?allowPublicKeyRetrieval=true&useSSL=false";
+		String userName = "root";
+		String password = "Rn@11041997#";
 		Connection connection = null;
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			throw new EmployeePayrollJDBCException("Cannot connect to the JDBC Driver!! \nDriverException thrown...",
-					ExceptionType.CANNOT_LOAD_DRIVER);
-		}
-		listDrivers();
-		try {
-			connection = DriverManager.getConnection(credentials[0], credentials[1], credentials[2]);
-			status = "Connection Successfull";
-		} catch (Exception e) {
-			throw new EmployeePayrollJDBCException("Unable to Connect!! \nWrongLoginCredentialsException thrown... ",
-					ExceptionType.WRONG_CREDENTIALS);
-		}
+		System.out.println("Processing Thread: " + Thread.currentThread().getName() + " Connecting to database with Id:"
+				+ connectionCounter);
+		connection = DriverManager.getConnection(jdbcURL, userName, password);
+		System.out.println("Processing Thread: " + Thread.currentThread().getName() + " Id:" + connectionCounter
+				+ " Connection is successfull!!!!!!" + connection);
 		return connection;
 	}
 
@@ -404,14 +398,13 @@ public class EmpPayrollJDBCOperations {
 		Connection connection = null;
 		int res = 0;
 		try {
-			connection = this.getConnection();
+			connection = getConnection();
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
-		int employeeId = 0;
 		try (Statement statement = connection.createStatement()) {
 			String sql = String.format("select * from employee_payroll2 where name = '%s';", e1.name);
 			ResultSet result = statement.executeQuery(sql);
@@ -451,13 +444,6 @@ public class EmpPayrollJDBCOperations {
 			}
 		}
 		return res;
-	}
-
-	private static void listDrivers() {
-		Enumeration<Driver> driverList = DriverManager.getDrivers();
-		while (driverList.hasMoreElements()) {
-			Driver driverClass = driverList.nextElement();
-		}
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.capgemini.EmployeePayroll.EmployeePayrollService.IOService;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryType;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
