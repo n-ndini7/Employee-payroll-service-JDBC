@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.capgemini.EmployeePayroll.EmployeePayrollService.IOService;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryType;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
@@ -11,6 +12,7 @@ import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class EmployeePayrollService {
 
@@ -196,6 +198,32 @@ public class EmployeePayrollService {
 			check2++;
 		}
 		return check2;
+	}
+
+	public void addEmployeePayrollDataToDBER_threadsImplementation(List<EmployeePayrollData> list) {
+		Map<Integer, Boolean> statusMap = new HashMap<Integer, Boolean>();
+		list.forEach(e1 -> {
+			statusMap.put(e1.hashCode(), false);
+			Runnable task = () -> {
+				System.out.println("Employee Being Added : " + Thread.currentThread().getName());
+				try {
+					this.addEmployeePayrollDatatoDBER(e1);
+				} catch (EmployeePayrollJDBCException e) {
+					e.printStackTrace();
+				}
+				statusMap.put(e1.hashCode(), true);
+				System.out.println("Employee Added : " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, e1.name);
+			thread.start();
+		});
+		while (statusMap.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+
+			}
+		}
 	}
 
 	public boolean removeEmployeeFromDB(EmployeePayrollData e1) {
