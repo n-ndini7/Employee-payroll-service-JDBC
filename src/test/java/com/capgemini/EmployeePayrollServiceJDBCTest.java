@@ -11,7 +11,10 @@ import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateTyp
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
 import java.sql.Date;
+import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +39,7 @@ public class EmployeePayrollServiceJDBCTest {
 	public void givenDBShoulRetrieveContentsFromTheTable() {
 		try {
 			List<EmployeePayrollData> list1 = e1.readEmployeePayrollData();
-			Assert.assertEquals(6, list1.size());
+			Assert.assertEquals(9, list1.size());
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +82,7 @@ public class EmployeePayrollServiceJDBCTest {
 		Date endDate = Date.valueOf(LocalDate.now());
 		List<EmployeePayrollData> empList = employeePayrollService.getEmployeeForDateRange(IOService.DB_IO, startDate,
 				endDate);
-		Assert.assertEquals(6, empList.size());
+		Assert.assertEquals(9, empList.size());
 	}
 
 	@Test
@@ -88,7 +91,7 @@ public class EmployeePayrollServiceJDBCTest {
 		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
 		Map<String, Double> salaryMap = employeePayrollService.readAverageSalaryByGender(IOService.DB_IO,
 				SalaryType.SUM);
-		Assert.assertTrue(salaryMap.get("M").equals(12000000.0) && salaryMap.get("F").equals(12000000.0));
+		Assert.assertTrue(salaryMap.get("M").equals(15000000.0) && salaryMap.get("F").equals(18000000.0));
 	}
 
 	@Test
@@ -131,5 +134,29 @@ public class EmployeePayrollServiceJDBCTest {
 		employeePayrollService.removeEmployeeFromDB(e1);
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Bill", 3000000);
 		Assert.assertTrue(result);
+	}
+
+	@Test
+	public void AddedMultipleContacts_threadsImplementation() {
+		Date d1 = Date.valueOf(LocalDate.now());
+		EmployeePayrollData[] employees = {
+				new EmployeePayrollData(90, "Eva", "F", 3000000.0, d1, 5, "Sales", 101, "Microsoft"),
+				new EmployeePayrollData(70, "Dorak", "M", 3000000.0, d1, 9, "HR", 706, "Amazon"),
+				new EmployeePayrollData(21, "Ritu", "F", 3000000.0, d1, 6, "Marketing", 100, "Microsoft") };
+		EmployeePayrollService empService = new EmployeePayrollService();
+		empService.readEmployeePayrollDataDB(IOService.DB_IO);
+		Instant start = Instant.now();
+		empService.addEmployeePayrollDataToDBER_threadsImplementation(Arrays.asList(employees));
+		Instant end = Instant.now();
+		System.out.println("Duration without Thread : " + Duration.between(start, end));
+		Instant threadStart = Instant.now();
+		empService.addEmployeePayrollDataToDBER_threadsImplementation(Arrays.asList(employees));
+		Instant threadEnd = Instant.now();
+		System.out.println("Duration with Thread : " + Duration.between(threadStart, threadEnd));
+		boolean result = (empService.checkEmployeePayrollInSyncWithDB("Eva", 3000000)
+				&& empService.checkEmployeePayrollInSyncWithDB("Dorak", 3000000))
+				&& empService.checkEmployeePayrollInSyncWithDB("Ritu", 3000000) ? true : false;
+		Assert.assertTrue(result);
+
 	}
 }

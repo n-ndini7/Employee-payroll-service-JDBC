@@ -18,7 +18,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//UC12 - remove employee from the database 
+//MultiThreading_UC1 - add multiple employees to the database and record start and stop time to determine the time taken for execution 
 public class EmpPayrollJDBCOperations {
 	private static PreparedStatement employeePayrollDataStatement;
 	public static EmpPayrollJDBCOperations emp;
