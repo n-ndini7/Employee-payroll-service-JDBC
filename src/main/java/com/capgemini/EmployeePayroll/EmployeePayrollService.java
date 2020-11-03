@@ -234,6 +234,34 @@ public class EmployeePayrollService {
 		}
 	}
 
+	public boolean updateEmployeeSalaryInDBUsingThreads(List<EmployeePayrollData> empPayrollDataList) {
+		Map<Integer, Boolean> updateStatus = new HashMap<Integer, Boolean>();
+		empPayrollDataList.forEach(employeePayrollData -> {
+			updateStatus.put(employeePayrollData.hashCode(), false);
+			Runnable task = () -> {
+				try {
+					employeePayrollDBService.updateEmployeeSalary(employeePayrollData.name,
+							employeePayrollData.basic_pay);
+				} catch (EmployeePayrollJDBCException e) {
+					e.printStackTrace();
+				}
+				updateStatus.put(employeePayrollData.hashCode(), true);
+			};
+			Thread thread = new Thread(task, employeePayrollData.name);
+			thread.start();
+		});
+		while (updateStatus.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if (updateStatus.containsValue(false))
+			return false;
+		return true;
+	}
+
 	public boolean removeEmployeeFromDB(EmployeePayrollData e1) {
 		int check = employeePayrollDBService.removeEmployeeFromDB(e1);
 		if (check == 1)

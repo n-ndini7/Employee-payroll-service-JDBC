@@ -16,7 +16,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//MultiThreading_UC5 - Demonstrate thread synchronization using connection counter while adding multiple employees to the database 
+//MultiThreading_UC6 - update salary of multiple employees  
 public class EmpPayrollJDBCOperations {
 	private static int connectionCounter = 0;
 	private PreparedStatement employeePayrollDatastatement;
@@ -56,6 +56,7 @@ public class EmpPayrollJDBCOperations {
 		System.out.println("Processing Thread: " + Thread.currentThread().getName() + " Connecting to database with Id:"
 				+ connectionCounter);
 		connection = DriverManager.getConnection(jdbcURL, userName, password);
+		status = "Connection Successfull";
 		System.out.println("Processing Thread: " + Thread.currentThread().getName() + " Id:" + connectionCounter
 				+ " Connection is successfull!!!!!!" + connection);
 		return connection;
@@ -441,6 +442,22 @@ public class EmpPayrollJDBCOperations {
 					e.printStackTrace();
 				}
 			}
+		}
+		return res;
+	}
+
+	public int updateEmployeeSalary(String name, double salary) throws EmployeePayrollJDBCException {
+		String sql = String.format(
+				"update employee_payroll2 set basic_pay = '%.2f' where name ='%s' and is_active = 1;", salary, name);
+		int res = 0;
+		try (Connection connection = getConnection()) {
+			Statement statement = connection.createStatement();
+			res = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new EmployeePayrollJDBCException("Cannot update data!! \nUpdateFailException thrown...!!",
+					ExceptionType.UPDATE_FAILED);
+		} catch (EmployeePayrollJDBCException e1) {
+			e1.printStackTrace();
 		}
 		return res;
 	}
