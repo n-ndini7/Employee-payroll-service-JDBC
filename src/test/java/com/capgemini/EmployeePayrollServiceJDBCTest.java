@@ -94,7 +94,7 @@ public class EmployeePayrollServiceJDBCTest {
 		employeePayrollService.readEmployeePayrollDataDB(IOService.DB_IO);
 		Map<String, Double> salaryMap = employeePayrollService.readAverageSalaryByGender(IOService.DB_IO,
 				SalaryType.SUM);
-		Assert.assertTrue(salaryMap.get("M").equals(15000000.0) && salaryMap.get("F").equals(18000000.0));
+		Assert.assertTrue(salaryMap.get("M").equals(18000000.0) && salaryMap.get("F").equals(21000000.0));
 	}
 
 	@Test
@@ -175,6 +175,16 @@ public class EmployeePayrollServiceJDBCTest {
 		boolean result = (empService.checkEmployeePayrollInSyncWithDB("Eva", 3000000)
 				&& empService.checkEmployeePayrollInSyncWithDB("Dorak", 3000000))
 				&& empService.checkEmployeePayrollInSyncWithDB("Ritu", 3000000) ? true : false;
+		Assert.assertTrue(result);
+	}
+
+	@Test
+	public void givenMultipleEmployees_ShouldUpdateSalaryInDB() {
+		EmployeePayrollData[] employees = { new EmployeePayrollData(70, "Dorak", 6000000),
+				new EmployeePayrollData(90, "Eva", 6000000) };
+		EmployeePayrollService empPayRollService = new EmployeePayrollService();
+		empPayRollService.readEmployeePayrollDataDB(IOService.DB_IO);
+		boolean result = empPayRollService.updateEmployeeSalaryInDBUsingThreads(Arrays.asList(employees));
 		Assert.assertTrue(result);
 	}
 }
