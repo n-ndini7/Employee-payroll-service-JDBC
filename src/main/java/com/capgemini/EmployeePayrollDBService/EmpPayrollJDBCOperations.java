@@ -16,7 +16,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//MultiThreading_UC4 - Demonstrate thread synchronization using connection counter 
+//MultiThreading_UC5 - Demonstrate thread synchronization using connection counter while adding multiple employees to the database 
 public class EmpPayrollJDBCOperations {
 	private static int connectionCounter = 0;
 	private PreparedStatement employeePayrollDatastatement;

@@ -208,7 +208,7 @@ public class EmployeePayrollService {
 		}
 	}
 
-	public void addEmployeePayrollDataToDBER_threadsImplementation(List<EmployeePayrollData> list) {
+	public synchronized void addEmployeePayrollDataToDBER_threadsImplementation(List<EmployeePayrollData> list) {
 		Map<Integer, Boolean> statusMap = new HashMap<Integer, Boolean>();
 		list.forEach(e1 -> {
 			statusMap.put(e1.hashCode(), false);
