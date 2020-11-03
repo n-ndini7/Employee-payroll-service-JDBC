@@ -137,7 +137,7 @@ public class EmployeePayrollServiceJDBCTest {
 	}
 
 	@Test
-	public void AddedMultipleContacts_threadsImplementation() {
+	public void AddedMultipleContactstoAddressBook() {
 		Date d1 = Date.valueOf(LocalDate.now());
 		EmployeePayrollData[] employees = {
 				new EmployeePayrollData(90, "Eva", "F", 3000000.0, d1, 5, "Sales", 101, "Microsoft"),
@@ -146,13 +146,9 @@ public class EmployeePayrollServiceJDBCTest {
 		EmployeePayrollService empService = new EmployeePayrollService();
 		empService.readEmployeePayrollDataDB(IOService.DB_IO);
 		Instant start = Instant.now();
-		empService.addEmployeePayrollDataToDBER_threadsImplementation(Arrays.asList(employees));
+		empService.addMultipleEmployeesToDB(Arrays.asList(employees));
 		Instant end = Instant.now();
 		System.out.println("Duration without Thread : " + Duration.between(start, end));
-		Instant threadStart = Instant.now();
-		empService.addEmployeePayrollDataToDBER_threadsImplementation(Arrays.asList(employees));
-		Instant threadEnd = Instant.now();
-		System.out.println("Duration with Thread : " + Duration.between(threadStart, threadEnd));
 		boolean result = (empService.checkEmployeePayrollInSyncWithDB("Eva", 3000000)
 				&& empService.checkEmployeePayrollInSyncWithDB("Dorak", 3000000))
 				&& empService.checkEmployeePayrollInSyncWithDB("Ritu", 3000000) ? true : false;
