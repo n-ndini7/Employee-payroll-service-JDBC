@@ -200,6 +200,15 @@ public class EmployeePayrollService {
 		return check2;
 	}
 
+	public void addMultipleEmployeesToDB(List<EmployeePayrollData> list) {
+		for (EmployeePayrollData e3 : list) {
+			int count = EmpPayrollJDBCOperations.addEmployeeWithPayrollDetailsER(e3);
+			if (count == 5) {
+				employeeList.add(e3);
+			}
+		}
+	}
+
 	public void addEmployeePayrollDataToDBER_threadsImplementation(List<EmployeePayrollData> list) {
 		Map<Integer, Boolean> statusMap = new HashMap<Integer, Boolean>();
 		list.forEach(e1 -> {
