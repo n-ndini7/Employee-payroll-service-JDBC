@@ -176,6 +176,5 @@ public class EmployeePayrollServiceJDBCTest {
 				&& empService.checkEmployeePayrollInSyncWithDB("Dorak", 3000000))
 				&& empService.checkEmployeePayrollInSyncWithDB("Ritu", 3000000) ? true : false;
 		Assert.assertTrue(result);
-
 	}
 }

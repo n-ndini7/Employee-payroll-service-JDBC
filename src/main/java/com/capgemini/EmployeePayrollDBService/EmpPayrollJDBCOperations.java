@@ -16,7 +16,7 @@ import java.sql.Statement;
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
 
-//MultiThreading_UC3 - Demonstrate thread synchronization using connection counter 
+//MultiThreading_UC4 - Demonstrate thread synchronization using connection counter 
 public class EmpPayrollJDBCOperations {
 	private static int connectionCounter = 0;
 	private PreparedStatement employeePayrollDatastatement;
@@ -34,11 +34,10 @@ public class EmpPayrollJDBCOperations {
 	}
 
 	UpdateType type;
-	private static ConnectionCredentials c1 = null;
 	public static String status = null;
 
 	public EmpPayrollJDBCOperations() {
-		c1 = new ConnectionCredentials();
+		new ConnectionCredentials();
 	}
 
 	public static EmpPayrollJDBCOperations getInstance() {
@@ -48,7 +47,7 @@ public class EmpPayrollJDBCOperations {
 		return emp;
 	}
 
-	public static synchronized Connection getConnection() throws EmployeePayrollJDBCException, SQLException {
+	public static Connection getConnection() throws EmployeePayrollJDBCException, SQLException {
 		connectionCounter++;
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?allowPublicKeyRetrieval=true&useSSL=false";
 		String userName = "root";
