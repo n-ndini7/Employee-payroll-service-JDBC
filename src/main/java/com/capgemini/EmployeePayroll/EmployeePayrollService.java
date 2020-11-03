@@ -209,6 +209,32 @@ public class EmployeePayrollService {
 		}
 	}
 
+	public void addEmployeePayrollDataToDBER_threadsImplementation(List<EmployeePayrollData> list) {
+		Map<Integer, Boolean> statusMap = new HashMap<Integer, Boolean>();
+		list.forEach(e1 -> {
+			statusMap.put(e1.hashCode(), false);
+			Runnable task = () -> {
+				System.out.println("Employee Being Added : " + Thread.currentThread().getName());
+				try {
+					this.addEmployeePayrollDatatoDBER(e1);
+				} catch (EmployeePayrollJDBCException e) {
+					e.printStackTrace();
+				}
+				statusMap.put(e1.hashCode(), true);
+				System.out.println("Employee Added : " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, e1.name);
+			thread.start();
+		});
+		while (statusMap.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+
+			}
+		}
+	}
+
 	public boolean removeEmployeeFromDB(EmployeePayrollData e1) {
 		int check = employeePayrollDBService.removeEmployeeFromDB(e1);
 		if (check == 1)
