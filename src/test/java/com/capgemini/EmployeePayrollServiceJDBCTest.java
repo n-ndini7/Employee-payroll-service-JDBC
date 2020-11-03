@@ -11,6 +11,7 @@ import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateTyp
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -30,6 +31,8 @@ public class EmployeePayrollServiceJDBCTest {
 			e1.getConnection();
 			Assert.assertEquals("Connection Successfull", e1.status);
 		} catch (EmployeePayrollJDBCException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
