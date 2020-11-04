@@ -461,4 +461,19 @@ public class EmpPayrollJDBCOperations {
 		return res;
 	}
 
+	public int updateEmployeeData(String name, double salary) {
+		int res = 0;
+		String sql = String.format("update employee_payroll2 set basic_pay= %.2f where name = '%s';", salary, name);
+		try (Connection connection = getConnection()) {
+			Statement statement = connection.createStatement();
+			res = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (EmployeePayrollJDBCException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		return res;
+	}
 }

@@ -127,7 +127,14 @@ public class EmployeePayrollService {
 
 	}
 
-	private EmployeePayrollData getEmployeePayrollData(String name) {
+	public void updateSalaryinJson(String name, double salary, IOService type) {
+		EmployeePayrollData e2 = getEmployeePayrollData(name);
+		if (e2 != null) {
+			e2.basic_pay = salary;
+		}
+	}
+
+	public EmployeePayrollData getEmployeePayrollData(String name) {
 		for (EmployeePayrollData data : employeeList) {
 			if (data.name.equals(name)) {
 				return data;
@@ -283,4 +290,5 @@ public class EmployeePayrollService {
 			}
 		}
 	}
+
 }

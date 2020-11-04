@@ -14,17 +14,17 @@
       "taxable_pay": 0
     },
     {
-      "basic_pay": 500000,
-      "compid": 0,
-      "deductions": 0,
-      "deptid": 0,
-      "gender": "M",
       "id": 2,
       "name": "David",
+      "gender": "M",
+      "basic_pay": 1234500,
+      "deductions": 0,
+      "taxable_pay": 0,
+      "tax": 0,
       "net_pay": 0,
       "startDate": "Nov 4, 2020",
-      "tax": 0,
-      "taxable_pay": 0
+      "deptid": 0,
+      "compid": 0
     },
     {
       "id": 89,
