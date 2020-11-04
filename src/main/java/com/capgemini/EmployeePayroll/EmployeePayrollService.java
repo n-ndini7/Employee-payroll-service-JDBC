@@ -272,4 +272,15 @@ public class EmployeePayrollService {
 		else
 			return false;
 	}
+
+	public void addEmployeePayrollToJsonServer(EmployeePayrollData employeePayrollData, IOService ioService) {
+		if (ioService.equals(IOService.DB_IO)) {
+			try {
+				this.addEmployeePayrollDatatoDB(employeePayrollData);
+				employeeList.add(employeePayrollData);
+			} catch (EmployeePayrollJDBCException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
