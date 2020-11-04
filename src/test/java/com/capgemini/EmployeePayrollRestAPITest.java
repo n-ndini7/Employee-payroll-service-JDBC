@@ -104,4 +104,19 @@ public class EmployeePayrollRestAPITest {
 		Assert.assertEquals(200, statusCode);
 	}
 
+	@Test
+	public void givenEmployeeName_WhenDeleted_ShouldMatch200ResponseAndCount() {
+		EmployeePayrollService employeePayrollService;
+		EmployeePayrollData[] ArrayOfEmps = getEmployeeList();
+		employeePayrollService = new EmployeePayrollService(Arrays.asList(ArrayOfEmps));
+		EmployeePayrollData employeePayrollData = employeePayrollService.getEmployeePayrollData("Mukesh");
+		String empJson = new Gson().toJson(employeePayrollData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		Response response = request.delete("/employees/" + employeePayrollData.id);
+		employeePayrollService.deleteEmployeePayroll(employeePayrollData.name, IOService.REST_IO);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(200, statusCode);
+	}
+
 }
