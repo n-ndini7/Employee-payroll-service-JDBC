@@ -53,19 +53,6 @@
       "compid": 0
     },
     {
-      "id": 66,
-      "name": "Mukesh",
-      "gender": "M",
-      "basic_pay": 100000,
-      "deductions": 0,
-      "taxable_pay": 0,
-      "tax": 0,
-      "net_pay": 0,
-      "startDate": "Nov 8, 2018",
-      "deptid": 0,
-      "compid": 0
-    },
-    {
       "id": 88,
       "name": "Anil",
       "gender": "M",
@@ -75,6 +62,19 @@
       "tax": 0,
       "net_pay": 0,
       "startDate": "Feb 12, 2019",
+      "deptid": 0,
+      "compid": 0
+    },
+    {
+      "id": 66,
+      "name": "Mukesh",
+      "gender": "M",
+      "basic_pay": 100000,
+      "deductions": 0,
+      "taxable_pay": 0,
+      "tax": 0,
+      "net_pay": 0,
+      "startDate": "Nov 8, 2018",
       "deptid": 0,
       "compid": 0
     }
