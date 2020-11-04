@@ -1,17 +1,16 @@
 package com.capgemini.EmployeePayrollDBService;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.sql.Statement;
 
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException.ExceptionType;
@@ -168,7 +167,7 @@ public class EmpPayrollJDBCOperations {
 		String sql = String.format("select * from employee_payroll2 where start between '%s' and '%s';", startDate,
 				endDate);
 		List<EmployeePayrollData> empList = new ArrayList<>();
-		try (Connection connection = this.getConnection()) {
+		try (Connection connection = EmpPayrollJDBCOperations.getConnection()) {
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(sql);
 			empList = this.getEmployeePayrollData(result);

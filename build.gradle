@@ -27,11 +27,14 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 	
+	testImplementation 'io.rest-assured:rest-assured:4.1.2'
+	 
 	compile 'com.opencsv:opencsv:4.0'
     
     compile 'com.google.code.gson:gson:2.2.+'
     
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     
+     compile group:'org.codehaus.groovy',name:'groovy-all',version:'2.4.4'
     
 }
