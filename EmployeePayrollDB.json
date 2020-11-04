@@ -1,14 +1,43 @@
 {
   "employees": [
     {
+      "basic_pay": 100000,
+      "compid": 0,
+      "deductions": 0,
+      "deptid": 0,
+      "gender": "M",
       "id": 1,
       "name": "Pankaj",
-      "salary": "10000"
+      "net_pay": 0,
+      "startDate": "Nov 4, 2020",
+      "tax": 0,
+      "taxable_pay": 0
     },
     {
+      "basic_pay": 500000,
+      "compid": 0,
+      "deductions": 0,
+      "deptid": 0,
+      "gender": "M",
+      "id": 2,
       "name": "David",
-      "salary": "5000",
-      "id": 2
+      "net_pay": 0,
+      "startDate": "Nov 4, 2020",
+      "tax": 0,
+      "taxable_pay": 0
+    },
+    {
+      "id": 89,
+      "name": "Marcus",
+      "gender": "M",
+      "basic_pay": 300000,
+      "deductions": 0,
+      "taxable_pay": 0,
+      "tax": 0,
+      "net_pay": 0,
+      "startDate": "Nov 4, 2020",
+      "deptid": 0,
+      "compid": 0
     }
   ]
 }
