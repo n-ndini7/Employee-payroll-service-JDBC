@@ -1,5 +1,15 @@
 package com.capgemini;
 
+import java.sql.Date;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.capgemini.EmployeePayroll.EmployeePayrollData;
@@ -10,17 +20,6 @@ import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryTyp
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
 
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.Instant;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-
 public class EmployeePayrollServiceJDBCTest {
 
 	private static EmpPayrollJDBCOperations e1 = new EmpPayrollJDBCOperations();
@@ -28,8 +27,8 @@ public class EmployeePayrollServiceJDBCTest {
 	@Test
 	public void ConnectToTheDatabase() {
 		try {
-			e1.getConnection();
-			Assert.assertEquals("Connection Successfull", e1.status);
+			EmpPayrollJDBCOperations.getConnection();
+			Assert.assertEquals("Connection Successfull", EmpPayrollJDBCOperations.status);
 		} catch (EmployeePayrollJDBCException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {

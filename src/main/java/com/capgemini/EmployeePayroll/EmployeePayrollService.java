@@ -1,5 +1,8 @@
 package com.capgemini.EmployeePayroll;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -8,10 +11,6 @@ import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.SalaryType;
 import com.capgemini.EmployeePayrollDBService.EmpPayrollJDBCOperations.UpdateType;
 import com.capgemini.EmployeePayrollDBService.EmployeePayrollJDBCException;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class EmployeePayrollService {
 
@@ -29,7 +28,7 @@ public class EmployeePayrollService {
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeeList) {
 
-		this.employeeList = employeeList;
+		this.employeeList = new ArrayList<>(employeeList);
 	}
 
 	public static void main(String[] args) {
@@ -80,7 +79,7 @@ public class EmployeePayrollService {
 	// Writes Employee payroll data to console
 
 	public long countEntries(IOService ioService) {
-		if (ioService.equals(IOService.FILE_IO))
+		if (ioService.equals(IOService.FILE_IO) || ioService.equals(IOService.REST_IO))
 			return new EmployeePayrollFileIOOperations().countNoOfEntries();
 		return 0;
 	}
@@ -147,6 +146,10 @@ public class EmployeePayrollService {
 			}
 		}
 		return false;
+	}
+
+	public long countEntriesDB(IOService fileIo) {
+		return employeeList.size();
 	}
 
 	public void updateEmployeeSalaryUsingPrepareStatement(String name, double salary) {
